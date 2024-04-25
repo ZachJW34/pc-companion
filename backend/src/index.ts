@@ -1,13 +1,20 @@
-import { keyboard, mouse, Point } from "@nut-tree/nut-js";
+import { mouse, Point } from "@nut-tree/nut-js";
 import { BrowserMouseToButtonMapping, MouseButtons } from "./key-mappings";
 import { WebSocketServer } from "ws";
-import { BrowserKeys, handleKey } from "./keyboard";
+import { BrowserKeys, getKeyboardHandler } from "./keyboard";
 
 const wss = new WebSocketServer({ port: 8080 });
 
 type RemoteEvent =
   | { type: "click"; click: MouseButtons }
-  | { type: "keydown" | "keyup"; code: BrowserKeys; key: string }
+  | {
+      type: "keydown" | "keyup";
+      code: BrowserKeys;
+      key: string;
+      multi?: boolean;
+    }
+  | { type: "enable-multi" }
+  | { type: "disable-multi" }
   | {
       type: "touchmove" | "touchstart";
       clientX: number;
@@ -21,18 +28,34 @@ let touchStatus:
 
 async function main() {
   console.log("PC-Companion is running...");
+
+  const keyboardHandler = getKeyboardHandler();
+
   wss.on("connection", function connection(ws) {
     ws.on("error", console.error);
 
     ws.on("message", async (data) => {
       const event: RemoteEvent = JSON.parse(data.toString());
       console.log("ws:recieved - ", event);
+
       switch (event.type) {
         case "keydown": {
-          return await handleKey(event.code, "press");
+          return await keyboardHandler.handleKey("press", {
+            code: event.code,
+            multi: event.multi,
+          });
         }
         case "keyup": {
-          return await handleKey(event.code, "release");
+          return await keyboardHandler.handleKey("release", {
+            code: event.code,
+            multi: event.multi,
+          });
+        }
+        case "enable-multi": {
+          return keyboardHandler.enableMulti();
+        }
+        case "disable-multi": {
+          return await keyboardHandler.disableMulti();
         }
         case "click": {
           return await mouse.click(BrowserMouseToButtonMapping[event.click]);
