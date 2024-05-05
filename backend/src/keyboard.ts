@@ -84,20 +84,6 @@ export const BrowserToKeyMapping = {
 
 export type BrowserKeys = keyof typeof BrowserToKeyMapping;
 
-async function handleKey(
-  action: "press" | "release",
-  { code, multi }: { code: BrowserKeys; multi?: boolean }
-): Promise<void> {
-  const realKey = BrowserToKeyMapping[code];
-  if (code === "Windows" && getPlatform() !== "windows") return;
-
-  if (action === "press") {
-    await keyboard.pressKey(realKey);
-  } else if (action === "release") {
-    await keyboard.releaseKey(realKey);
-  }
-}
-
 export function getKeyboardHandler() {
   const multiKeysState = {
     active: false,

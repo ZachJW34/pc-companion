@@ -1,0 +1,13 @@
+# ninja log v5
+4	152	1708381254503446318	CMakeFiles/libnut.dir/src/deadbeef_rand.c.o	f30aa61c5663c58f
+5	373	1708381254724043859	CMakeFiles/libnut.dir/src/MMBitmap.c.o	73c152040ee667bc
+6	6167	1708381260516880875	CMakeFiles/libnut.dir/src/macos/keycode.c.o	221acb42b65ca5fd
+8	6459	1708381260808884290	CMakeFiles/libnut.dir/src/macos/keypress.c.o	1f9971f719cf09b6
+153	6594	1708381260944755135	CMakeFiles/libnut.dir/src/macos/mouse.c.o	3ba077e02bcecf37
+6171	11444	1708381265794708607	CMakeFiles/libnut.dir/src/macos/screen.c.o	d5ef097fe2b0f345
+373	13906	1708381268254710176	CMakeFiles/libnut.dir/src/macos/mouse_utils.mm.o	765f0f4f10951142
+6459	16188	1708381270537651147	CMakeFiles/libnut.dir/src/macos/screengrab.m.o	8aadde05692b08b3
+6595	16394	1708381270742868632	CMakeFiles/libnut.dir/src/macos/highlightwindow.m.o	fb7f211b37ca50a9
+2	18502	1708381272852502948	CMakeFiles/libnut.dir/src/main.cc.o	ba93fe33ece3fe99
+11445	20896	1708381275245598654	CMakeFiles/libnut.dir/src/macos/window_manager.mm.o	1823e6060d51c279
+20896	21177	1708381275528011752	Release/libnut.node	3aad6ebcb88fdecd

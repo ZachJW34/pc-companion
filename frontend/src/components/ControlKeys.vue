@@ -2,6 +2,7 @@
 import { useWsStore } from "@/store/ws";
 import { Button } from "./ui/button";
 import { useToggle } from "@vueuse/core";
+import { onBeforeUnmount } from "vue";
 
 const { send } = useWsStore();
 const [useMutli, toggleUseMulti] = useToggle(false);
@@ -49,6 +50,10 @@ function functionKeyHandler(type: "keyup" | "keydown", code: string) {
   console.log(`FunctionKey event (${type}):`, code);
   send({ type, code, multi: useMutli.value });
 }
+
+onBeforeUnmount(() => {
+  send({ type: "disable-multi" });
+});
 </script>
 
 <template>

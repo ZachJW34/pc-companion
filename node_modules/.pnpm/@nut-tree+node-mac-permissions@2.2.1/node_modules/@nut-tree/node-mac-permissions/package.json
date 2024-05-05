@@ -1,0 +1,58 @@
+{
+  "name": "@nut-tree/node-mac-permissions",
+  "version": "2.2.1",
+  "description": "A native node module to manage system permissions on macOS",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "clean": "cmake-js clean",
+    "lint": "clang-format --dry-run -Werror src/permissions.mm && prettier --check index.js",
+    "format": "clang-format -i permissions.mm && prettier --write index.js",
+    "test": "jest",
+    "prepare": "husky install",
+    "build:debug": "cmake-js rebuild --CDCMAKE_OSX_ARCHITECTURES=\"arm64;x86_64\" --debug",
+    "build:release": "cmake-js rebuild --CDCMAKE_OSX_ARCHITECTURES=\"arm64;x86_64\"",
+    "prepublishOnly": "npm run build:release",
+    "publish:next": "npm publish --tag next"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nut-tree/node-mac-permissions.git"
+  },
+  "keywords": [
+    "permissions",
+    "macos",
+    "node",
+    "napi",
+    "native"
+  ],
+  "author": "Simon Hofmann <dev@s1h.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nut-tree/node-mac-permissions/issues"
+  },
+  "homepage": "https://github.com/nut-tree/node-mac-permissions#readme",
+  "dependencies": {
+    "bindings": "1.5.0",
+    "node-addon-api": "5.0.0"
+  },
+  "devDependencies": {
+    "jest": "29.3.0",
+    "cmake-js": "7.0.0",
+    "clang-format": "1.8.0",
+    "husky": "8.0.2",
+    "lint-staged": "13.0.3",
+    "prettier": "2.7.1"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --write"
+    ],
+    "*.mm": [
+      "clang-format -i"
+    ]
+  },
+  "os": [
+    "darwin"
+  ]
+}
