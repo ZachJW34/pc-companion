@@ -1,5 +1,5 @@
 import { Key, keyboard } from "@nut-tree-fork/nut-js";
-import { getPlatform } from "utils";
+import { getPlatform } from "./utils";
 
 export const BrowserToKeyMapping = {
   KeyA: Key.A,
@@ -84,20 +84,18 @@ export const BrowserToKeyMapping = {
 
 export type BrowserKeys = keyof typeof BrowserToKeyMapping;
 
-export function getKeyboardHandler() {
-  return {
-    async handleKey(
-      action: "press" | "release",
-      code: BrowserKeys
-    ): Promise<void> {
-      const realKey = BrowserToKeyMapping[code];
-      if (code === "Windows" && getPlatform() !== "windows") return;
+export const keyboardHandler = {
+  async handleKey(
+    action: "press" | "release",
+    code: BrowserKeys
+  ): Promise<void> {
+    const realKey = BrowserToKeyMapping[code];
+    if (code === "Windows" && getPlatform() !== "windows") return;
 
-      if (action === "press") {
-        await keyboard.pressKey(realKey);
-      } else if (action === "release") {
-        await keyboard.releaseKey(realKey);
-      }
-    },
-  };
-}
+    if (action === "press") {
+      await keyboard.pressKey(realKey);
+    } else if (action === "release") {
+      await keyboard.releaseKey(realKey);
+    }
+  },
+};

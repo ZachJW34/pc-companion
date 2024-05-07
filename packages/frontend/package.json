@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc && vite build",
-    "preview": "vite preview"
+    "dev": "bun run --bun vite",
+    "build": "vue-tsc && bun run --bun vite build",
+    "preview": "bun run --bun vite preview"
   },
   "dependencies": {
     "@vueuse/core": "^10.9.0",

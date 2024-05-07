@@ -4,10 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "pnpm -r --stream run dev",
-    "build": "pnpm -r --stream run build"
+    "dev": "bun --filter '*' dev",
+    "build": "bun --filter '*' build",
+    "start": "bun --filter backend start"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "workspaces": ["packages/*"],
+  "devDependencies": {
+    "@types/bun": "^1.1.1"
+  }
 }
