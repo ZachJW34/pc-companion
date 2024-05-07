@@ -4,12 +4,11 @@ import { type BrowserKeys, keyboardHandler } from "./keyboard";
 
 type RemoteEvent =
   | { type: "click"; click: MouseButtons }
-  | { type: "mousedown" | "mouseup"; button: MouseButtons }
+  | { type: "mousedown" | "mouseup"; code: MouseButtons }
   | {
       type: "keydown" | "keyup";
       code: BrowserKeys;
       key: string;
-      multi?: boolean;
     }
   | {
       type: "touchmove" | "touchstart";
@@ -37,12 +36,10 @@ export async function handleEvent(e: string | Buffer) {
       return await mouse.click(BrowserMouseToButtonMapping[event.click]);
     }
     case "mousedown": {
-      return await mouse.pressButton(BrowserMouseToButtonMapping[event.button]);
+      return await mouse.pressButton(BrowserMouseToButtonMapping[event.code]);
     }
     case "mouseup": {
-      return await mouse.releaseButton(
-        BrowserMouseToButtonMapping[event.button]
-      );
+      return await mouse.releaseButton(BrowserMouseToButtonMapping[event.code]);
     }
     case "touchstart": {
       return (touchStatus = {
