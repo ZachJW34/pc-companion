@@ -1,4 +1,4 @@
-import { mouse, Point } from "@nut-tree/nut-js";
+import { mouse, Point } from "@nut-tree-fork/nut-js";
 import { BrowserMouseToButtonMapping, MouseButtons } from "./key-mappings";
 import { WebSocketServer } from "ws";
 import { BrowserKeys, getKeyboardHandler } from "./keyboard";
@@ -7,14 +7,13 @@ const wss = new WebSocketServer({ port: 8080 });
 
 type RemoteEvent =
   | { type: "click"; click: MouseButtons }
+  | { type: "mousedown" | "mouseup"; button: MouseButtons }
   | {
       type: "keydown" | "keyup";
       code: BrowserKeys;
       key: string;
       multi?: boolean;
     }
-  | { type: "enable-multi" }
-  | { type: "disable-multi" }
   | {
       type: "touchmove" | "touchstart";
       clientX: number;
@@ -28,6 +27,7 @@ let touchStatus:
 
 async function main() {
   console.log("PC-Companion is running...");
+  console.log(`Websocket server running on: ws://localhost:8080/`);
 
   const keyboardHandler = getKeyboardHandler();
 
@@ -40,25 +40,23 @@ async function main() {
 
       switch (event.type) {
         case "keydown": {
-          return await keyboardHandler.handleKey("press", {
-            code: event.code,
-            multi: event.multi,
-          });
+          return await keyboardHandler.handleKey("press", event.code);
         }
         case "keyup": {
-          return await keyboardHandler.handleKey("release", {
-            code: event.code,
-            multi: event.multi,
-          });
-        }
-        case "enable-multi": {
-          return keyboardHandler.enableMulti();
-        }
-        case "disable-multi": {
-          return await keyboardHandler.disableMulti();
+          return await keyboardHandler.handleKey("release", event.code);
         }
         case "click": {
           return await mouse.click(BrowserMouseToButtonMapping[event.click]);
+        }
+        case "mousedown": {
+          return await mouse.pressButton(
+            BrowserMouseToButtonMapping[event.button]
+          );
+        }
+        case "mouseup": {
+          return await mouse.releaseButton(
+            BrowserMouseToButtonMapping[event.button]
+          );
         }
         case "touchstart": {
           return (touchStatus = {

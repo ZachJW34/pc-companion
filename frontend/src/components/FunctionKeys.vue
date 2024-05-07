@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { useWsStore } from "@/store/ws";
-import { Button } from "./ui/button";
+import KeySimulator from "./KeySimulator.vue";
 
-const { send } = useWsStore();
 const keys = [
   {
     text: "F1",
@@ -53,22 +51,10 @@ const keys = [
     code: "F12",
   },
 ];
-
-function functionKeyHandler(type: "keyup" | "keydown", code: string) {
-  console.log(`FunctionKey event (${type}):`, code);
-  send({ type, code });
-}
 </script>
 
 <template>
   <div class="flex gap-2 justify-center flex-wrap">
-    <Button
-      v-for="key in keys"
-      @mousedown="() => functionKeyHandler('keydown', key.code)"
-      @mouseup="() => functionKeyHandler('keyup', key.code)"
-      variant="outline"
-      class="text-xs p-2 h-8 w-9"
-      >{{ key.text }}</Button
-    >
+    <KeySimulator v-for="key in keys" :value="key" type="keyboard" />
   </div>
 </template>

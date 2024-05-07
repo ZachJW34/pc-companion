@@ -8,7 +8,7 @@ export const useWsStore = defineStore("ws", () => {
     send: wsSend,
     open,
     close,
-  } = useWebSocket(import.meta.env.VITE_WS_URL);
+  } = useWebSocket(import.meta.env.VITE_WS_URL || "ws://localhost:8080/");
 
   function send(data: any) {
     wsSend(JSON.stringify(data));

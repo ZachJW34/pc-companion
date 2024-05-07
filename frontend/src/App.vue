@@ -3,8 +3,10 @@ import { nextTick, ref } from "vue";
 import { useWsStore } from "./store/ws";
 import { useThrottleFn, useToggle } from "@vueuse/core";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import FunctionKeys from "@/components/FunctionKeys.vue";
 import ControlKeys from "@/components/ControlKeys.vue";
+import KeySimulator from "./components/KeySimulator.vue";
 
 const divInteractive = ref<HTMLDivElement>();
 const [showFnKeys, toggleShowFnKeys] = useToggle(false);
@@ -31,14 +33,9 @@ function touchEventHandler(e: TouchEvent) {
     e.preventDefault();
   }
   console.log(`TouchEvent (${e.type}): `, e);
-  const { clientX, clientY } = e.touches[0] || {};
+  const { clientX, clientY } = e.targetTouches[0] || {};
 
   ws.send({ type: e.type, clientX, clientY });
-}
-
-function explicitMouseClick(mouseButton: string) {
-  console.log(`Explicit click (${mouseButton})`);
-  ws.send({ type: "click", click: mouseButton });
 }
 
 const throttledEventTouchHandler = useThrottleFn(touchEventHandler, 8);
@@ -72,21 +69,12 @@ const throttledEventTouchHandler = useThrottleFn(touchEventHandler, 8);
         </div>
       </div>
       <div class="flex gap-2">
-        <Button
-          @click="explicitMouseClick('left')"
-          variant="outline"
-          class="bg-gray-900 border border-gray-500 min-w-16"
-        ></Button>
-        <Button
-          @click="explicitMouseClick('middle')"
-          variant="outline"
-          class="bg-gray-900 border border-gray-500 p-2"
-        ></Button>
-        <Button
-          @click="explicitMouseClick('right')"
-          variant="outline"
-          class="bg-gray-900 border border-gray-500 min-w-16 w-14"
-        ></Button>
+        <KeySimulator
+          v-for="key in ['left', 'middle', 'right']"
+          :value="{ code: key, text: '' }"
+          type="mouse"
+          :class="{ 'min-w-6': key === 'middle', 'min-w-20': key !== 'middle' }"
+        />
       </div>
       <div class="relative">
         <Button
@@ -121,18 +109,15 @@ const throttledEventTouchHandler = useThrottleFn(touchEventHandler, 8);
       ></div>
       <ControlKeys v-if="showCtrlKeys" />
     </div>
-    <textarea
+    <div
       ref="divInteractive"
-      tabindex="0"
       class="main focus:border focus:border-blue-500 w-full bg-gray-900 border border-gray-500 rounded-sm h-full"
       @click="mouseEventHandler"
-      @keydown="keyboardEventHandler"
-      @keyup="keyboardEventHandler"
       @touchmove="throttledEventTouchHandler"
       @touchstart="touchEventHandler"
       @touchend="touchEventHandler"
-    >
-    </textarea>
+    ></div>
+    <Input @keydown="keyboardEventHandler" @keyup="keyboardEventHandler" />
     <!-- <div>WS State: {{ ws.wsState.state }}; DidError: {{ ws.didError }}</div> -->
   </div>
 </template>
@@ -142,7 +127,7 @@ const throttledEventTouchHandler = useThrottleFn(touchEventHandler, 8);
   height: 100svh;
 }
 .main {
-  background-image: url("pc-companion-logo.png");
+  background-image: url("/pc-companion-logo.png");
   background-size: 20%;
   background-position: 50% 50%;
   background-repeat: no-repeat;

@@ -18,7 +18,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@nut-tree/nut-js": "^4.2.0",
+    "@nut-tree-fork/nut-js": "^4.2.1",
     "ws": "^8.16.0"
   },
   "type": "module",

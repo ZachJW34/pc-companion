@@ -1,4 +1,4 @@
-import { Key, keyboard } from "@nut-tree/nut-js";
+import { Key, keyboard } from "@nut-tree-fork/nut-js";
 import { getPlatform } from "utils";
 
 export const BrowserToKeyMapping = {
@@ -84,44 +84,11 @@ export const BrowserToKeyMapping = {
 
 export type BrowserKeys = keyof typeof BrowserToKeyMapping;
 
-async function handleKey(
-  action: "press" | "release",
-  { code, multi }: { code: BrowserKeys; multi?: boolean }
-): Promise<void> {
-  const realKey = BrowserToKeyMapping[code];
-  if (code === "Windows" && getPlatform() !== "windows") return;
-
-  if (action === "press") {
-    await keyboard.pressKey(realKey);
-  } else if (action === "release") {
-    await keyboard.releaseKey(realKey);
-  }
-}
-
 export function getKeyboardHandler() {
-  const multiKeysState = {
-    active: false,
-    keysPressed: <Key[]>[],
-  };
-
   return {
-    enableMulti() {
-      multiKeysState.active = true;
-    },
-
-    async disableMulti() {
-      multiKeysState.active = false;
-
-      await Promise.all(
-        multiKeysState.keysPressed.map((c) => keyboard.releaseKey(c))
-      );
-
-      multiKeysState.keysPressed = [];
-    },
-
     async handleKey(
       action: "press" | "release",
-      { code, multi }: { code: BrowserKeys; multi?: boolean }
+      code: BrowserKeys
     ): Promise<void> {
       const realKey = BrowserToKeyMapping[code];
       if (code === "Windows" && getPlatform() !== "windows") return;
@@ -129,11 +96,7 @@ export function getKeyboardHandler() {
       if (action === "press") {
         await keyboard.pressKey(realKey);
       } else if (action === "release") {
-        if (multi && multiKeysState.active) {
-          multiKeysState.keysPressed.push(BrowserToKeyMapping[code]);
-        } else {
-          await keyboard.releaseKey(realKey);
-        }
+        await keyboard.releaseKey(realKey);
       }
     },
   };

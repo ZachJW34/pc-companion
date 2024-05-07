@@ -1,4 +1,4 @@
-import { Button } from "@nut-tree/nut-js";
+import { Button } from "@nut-tree-fork/nut-js";
 
 export const BrowserMouseToButtonMapping = {
   left: Button.LEFT,
