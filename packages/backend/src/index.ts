@@ -13,7 +13,7 @@ const server = Bun.serve<{ authToken: string }>({
         return new Response("Upgrade failed", { status: 400 });
       }
 
-      return new Response("hello world");
+      return new Response("WS available");
     }
 
     // assume static content;
@@ -30,8 +30,11 @@ const server = Bun.serve<{ authToken: string }>({
     }
   },
   websocket: {
-    // this is called when a message is received
-    async message(_ws, message) {
+    async message(ws, message) {
+      if ((message = "ping")) {
+        ws.send("pong");
+        return;
+      }
       await handleEvent(message);
     },
   },

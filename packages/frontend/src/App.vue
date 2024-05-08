@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import FunctionKeys from "@/components/FunctionKeys.vue";
 import ControlKeys from "@/components/ControlKeys.vue";
-import KeySimulator from "./components/KeySimulator.vue";
+import KeySimulator from "@/components/KeySimulator.vue";
+import WsConnectionStatus from "@/components/WsConnectionStatus.vue";
 
 const divInteractive = ref<HTMLDivElement>();
 const [showFnKeys, toggleShowFnKeys] = useToggle(false);
@@ -42,6 +43,7 @@ const throttledEventTouchHandler = useThrottleFn(touchEventHandler, 8);
 </script>
 
 <template>
+  <WsConnectionStatus />
   <div class="p-4 container flex flex-col gap-2">
     <div class="flex justify-center items-center gap-2">
       <div class="relative">
