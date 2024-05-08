@@ -31,7 +31,7 @@ const server = Bun.serve<{ authToken: string }>({
   },
   websocket: {
     async message(ws, message) {
-      if ((message = "ping")) {
+      if (message === "ping") {
         ws.send("pong");
         return;
       }

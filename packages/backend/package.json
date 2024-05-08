@@ -13,15 +13,10 @@
   "devDependencies": {
     "@types/node": "^20.12.7",
     "@types/ws": "^8.5.10",
-    "esbuild": "^0.20.2",
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@nut-tree-fork/nut-js": "^4.2.1",
-    "ws": "^8.16.0"
+    "@nut-tree-fork/nut-js": "^4.2.1"
   },
-  "type": "module",
-  "optionalDependencies": {
-    "bufferutil": "^4.0.8"
-  }
+  "type": "module"
 }
