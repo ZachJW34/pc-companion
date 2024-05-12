@@ -14,3 +14,9 @@ export function getPlatform(): "linux" | "mac" | "windows" | "not-supported" {
       return "not-supported";
   }
 }
+
+export function debugLogger(...messages: any) {
+  if (process.env.LOG_LEVEL === "DEBUG") {
+    console.log(...messages);
+  }
+}

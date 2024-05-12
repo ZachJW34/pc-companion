@@ -1,9 +1,10 @@
-import { handleEvent } from "./emulator";
+import { Emulator } from "./emulator";
 import path from "node:path";
 
 const FRONTEND_ASSETS_BASE = path.join(process.cwd(), "..", "frontend", "dist");
+const emulator = await Emulator.NEW();
 
-const server = Bun.serve<{ authToken: string }>({
+const server = Bun.serve({
   async fetch(req, server) {
     const url = new URL(req.url);
 
@@ -35,9 +36,10 @@ const server = Bun.serve<{ authToken: string }>({
         ws.send("pong");
         return;
       }
-      await handleEvent(message);
+      await emulator.handleEvent(message);
     },
   },
+  port: Number(process.env.PORT) || 3000,
 });
 
 console.log(`PC-Companion is running on ${server.url.origin}`);

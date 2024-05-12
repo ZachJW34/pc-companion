@@ -8,6 +8,7 @@ import FunctionKeys from "@/components/FunctionKeys.vue";
 import ControlKeys from "@/components/ControlKeys.vue";
 import KeySimulator from "@/components/KeySimulator.vue";
 import WsConnectionStatus from "@/components/WsConnectionStatus.vue";
+import { logger } from "./lib/utils";
 
 const divInteractive = ref<HTMLDivElement>();
 const [showFnKeys, toggleShowFnKeys] = useToggle(false);
@@ -20,12 +21,12 @@ nextTick(() => {
 const ws = useWsStore();
 
 function mouseEventHandler(e: MouseEvent) {
-  console.log(`Mouse event (${e.type}): `, e);
+  logger(`Mouse event (${e.type}): `, e);
   ws.send({ type: e.type, click: "left" });
 }
 
 function keyboardEventHandler(e: KeyboardEvent) {
-  console.log(`Keyboard event (${e.type}):`, e);
+  logger(`Keyboard event (${e.type}):`, e);
   ws.send({ type: e.type, key: e.key, code: e.code });
 }
 
@@ -33,13 +34,13 @@ function touchEventHandler(e: TouchEvent) {
   if (e.type == "touchmove") {
     e.preventDefault();
   }
-  console.log(`TouchEvent (${e.type}): `, e);
+  logger(`TouchEvent (${e.type}): `, e);
   const { clientX, clientY } = e.targetTouches[0] || {};
 
-  ws.send({ type: e.type, clientX, clientY });
+  ws.send({ type: e.type, clientX, clientY, timestamp: Date.now() });
 }
 
-const throttledEventTouchHandler = useThrottleFn(touchEventHandler, 8);
+const throttledEventTouchHandler = useThrottleFn(touchEventHandler, 1);
 </script>
 
 <template>

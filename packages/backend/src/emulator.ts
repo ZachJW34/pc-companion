@@ -1,66 +1,75 @@
-import { Point, mouse } from "@nut-tree-fork/nut-js";
-import { BrowserMouseToButtonMapping, type MouseButtons } from "./key-mappings";
-import { type BrowserKeys, keyboardHandler } from "./keyboard";
+import { MouseClass, mouse, screen } from "@nut-tree-fork/nut-js";
+import { BrowserMouseToButtonMapping } from "./key-mappings";
+import { KeyboardHandler } from "./keyboard";
+import type { RemoteEvent } from "./events";
+import { TouchHandler } from "./touch";
+import { ScreenHandler } from "./screen";
+import { debugLogger } from "./utils";
 
-type RemoteEvent =
-  | { type: "click"; click: MouseButtons }
-  | { type: "mousedown" | "mouseup"; code: MouseButtons }
-  | {
-      type: "keydown" | "keyup";
-      code: BrowserKeys;
-      key: string;
-    }
-  | {
-      type: "touchmove" | "touchstart";
-      clientX: number;
-      clientY: number;
-    }
-  | { type: "touchend" };
+export class Emulator {
+  #keyboardHandler: KeyboardHandler;
+  #touchHandler: TouchHandler;
+  #screenHandler: ScreenHandler;
+  #mouseHandler: MouseClass;
 
-let touchStatus:
-  | { touching: false }
-  | { touching: true; clientX: number; clientY: number } = { touching: false };
+  static async NEW() {
+    return new Emulator({
+      keyboardHandler: new KeyboardHandler(),
+      touchHandler: new TouchHandler(),
+      screenHandler: new ScreenHandler({
+        width: await screen.width(),
+        height: await screen.height(),
+      }),
+      mouseHandler: mouse,
+    });
+  }
 
-export async function handleEvent(e: string | Buffer) {
-  const event: RemoteEvent = JSON.parse(e.toString());
-  console.log("ws:recieved - ", event);
+  constructor(handlers: {
+    keyboardHandler: KeyboardHandler;
+    touchHandler: TouchHandler;
+    screenHandler: ScreenHandler;
+    mouseHandler: MouseClass;
+  }) {
+    this.#keyboardHandler = handlers.keyboardHandler;
+    this.#touchHandler = handlers.touchHandler;
+    this.#screenHandler = handlers.screenHandler;
+    this.#mouseHandler = handlers.mouseHandler;
+  }
 
-  switch (event.type) {
-    case "keydown": {
-      return await keyboardHandler.handleKey("press", event.code);
-    }
-    case "keyup": {
-      return await keyboardHandler.handleKey("release", event.code);
-    }
-    case "click": {
-      return await mouse.click(BrowserMouseToButtonMapping[event.click]);
-    }
-    case "mousedown": {
-      return await mouse.pressButton(BrowserMouseToButtonMapping[event.code]);
-    }
-    case "mouseup": {
-      return await mouse.releaseButton(BrowserMouseToButtonMapping[event.code]);
-    }
-    case "touchstart": {
-      return (touchStatus = {
-        touching: true,
-        clientX: event.clientX,
-        clientY: event.clientY,
-      });
-    }
-    case "touchend": {
-      return (touchStatus = { touching: false });
-    }
-    case "touchmove": {
-      if (touchStatus.touching) {
-        const xDiff = event.clientX - touchStatus.clientX;
-        const yDiff = event.clientY - touchStatus.clientY;
-        const currentPos = await mouse.getPosition();
-        const newPoint = new Point(currentPos.x + xDiff, currentPos.y + yDiff);
-        touchStatus.clientX = event.clientX;
-        touchStatus.clientY = event.clientY;
+  async handleEvent(e: string | Buffer) {
+    const event: RemoteEvent = JSON.parse(e.toString());
+    debugLogger("ws:recieved - ", event);
 
-        return await mouse.move([newPoint]);
+    switch (event.type) {
+      case "keydown": {
+        return await this.#keyboardHandler.pressKey(event.code);
+      }
+      case "keyup": {
+        return await this.#keyboardHandler.releaseKey(event.code);
+      }
+      case "click": {
+        return await this.#mouseHandler.click(
+          BrowserMouseToButtonMapping[event.click]
+        );
+      }
+      case "mousedown": {
+        return await this.#mouseHandler.pressButton(
+          BrowserMouseToButtonMapping[event.code]
+        );
+      }
+      case "mouseup": {
+        return await this.#mouseHandler.releaseButton(
+          BrowserMouseToButtonMapping[event.code]
+        );
+      }
+      case "touchstart": {
+        return this.#touchHandler.startTouch(event);
+      }
+      case "touchmove": {
+        return this.#touchHandler.move(event, this.#screenHandler);
+      }
+      case "touchend": {
+        return this.#touchHandler.endTouch();
       }
     }
   }

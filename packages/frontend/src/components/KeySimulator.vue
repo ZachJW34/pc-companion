@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { logger } from "@/lib/utils";
 import { useWsStore } from "@/store/ws";
 import { ref, computed } from "vue";
 
@@ -17,7 +18,7 @@ const emulatedEvents = computed(() => ({
 
 function clickEventHandler(e: MouseEvent | TouchEvent, code: string) {
   e.preventDefault();
-  console.log({ type: e.type, code });
+  logger(`KeySimulator (${e.type}): `, { type: e.type, code });
 
   switch (e.type) {
     case "touchstart":

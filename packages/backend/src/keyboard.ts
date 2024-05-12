@@ -73,6 +73,7 @@ export const BrowserToKeyMapping = {
   ControlLeft: Key.LeftControl,
   ControlRight: Key.RightControl,
   Quote: Key.Quote,
+  Semicolon: Key.Semicolon,
   AltLeft: Key.LeftAlt,
   AltRight: Key.RightAlt,
   Backquote: Key.Grave,
@@ -84,18 +85,28 @@ export const BrowserToKeyMapping = {
 
 export type BrowserKeys = keyof typeof BrowserToKeyMapping;
 
-export const keyboardHandler = {
-  async handleKey(
-    action: "press" | "release",
-    code: BrowserKeys
-  ): Promise<void> {
-    const realKey = BrowserToKeyMapping[code];
-    if (code === "Windows" && getPlatform() !== "windows") return;
-
-    if (action === "press") {
+export class KeyboardHandler {
+  async pressKey(code: BrowserKeys): Promise<void> {
+    const realKey = this.#getRealKey(code);
+    if (realKey) {
       await keyboard.pressKey(realKey);
-    } else if (action === "release") {
+    }
+  }
+
+  async releaseKey(code: BrowserKeys): Promise<void> {
+    const realKey = this.#getRealKey(code);
+    if (realKey) {
       await keyboard.releaseKey(realKey);
     }
-  },
-};
+  }
+
+  #getRealKey(code: BrowserKeys) {
+    const realKey = BrowserToKeyMapping[code];
+
+    if (code === "Windows" && getPlatform() !== "windows") {
+      return null;
+    } else {
+      return realKey;
+    }
+  }
+}
