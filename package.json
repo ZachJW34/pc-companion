@@ -6,12 +6,14 @@
   "scripts": {
     "dev": "bun --filter '*' dev",
     "build": "bun --filter '*' build",
-    "start": "bun --filter backend start"
+    "start": "bun --filter '*' start"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "devDependencies": {
     "@types/bun": "^1.1.1"
   }

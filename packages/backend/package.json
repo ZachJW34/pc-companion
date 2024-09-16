@@ -16,7 +16,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@nut-tree-fork/nut-js": "^4.2.1"
+    "@nut-tree-fork/nut-js": "^4.2.2"
   },
   "type": "module"
 }

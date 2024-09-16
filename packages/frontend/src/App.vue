@@ -114,12 +114,16 @@ const throttledEventTouchHandler = useThrottleFn(touchEventHandler, 1);
     </div>
     <div
       ref="divInteractive"
-      class="main focus:border focus:border-blue-500 w-full bg-gray-900 border border-gray-500 rounded-sm h-full"
+      class="main focus:border focus:border-blue-500 w-full bg-gray-900 border border-gray-500 rounded-sm h-full relative"
       @click="mouseEventHandler"
       @touchmove="throttledEventTouchHandler"
       @touchstart="touchEventHandler"
       @touchend="touchEventHandler"
-    ></div>
+    >
+      <div class="absolute bottom-0 right-0 text-sm opacity-50 p-2">
+        __DATE__
+      </div>
+    </div>
     <Input @keydown="keyboardEventHandler" @keyup="keyboardEventHandler" />
     <!-- <div>WS State: {{ ws.wsState.state }}; DidError: {{ ws.didError }}</div> -->
   </div>
@@ -130,7 +134,7 @@ const throttledEventTouchHandler = useThrottleFn(touchEventHandler, 1);
   height: 100svh;
 }
 .main {
-  background-image: url("/pc-companion-logo.png");
+  background-image: url("/logo.png");
   background-size: 20%;
   background-position: 50% 50%;
   background-repeat: no-repeat;

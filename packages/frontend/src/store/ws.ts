@@ -3,8 +3,8 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 
 export const useWsStore = defineStore("ws", () => {
-  const wsURL =
-    import.meta.env.VITE_WS_URL || `ws://${window.location.host}/ws`;
+  const { protocol, host } = window.location;
+  const wsURL = `${protocol === "http:" ? "ws" : "wss"}://${host}/ws`;
   const error = ref<string | null>();
 
   const {

@@ -1,0 +1,5 @@
+192.168.68.51:7777 {
+  reverse_proxy /ws http://localhost:3000
+  root * ./packages/frontend/dist
+  file_server
+}

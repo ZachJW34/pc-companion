@@ -6,7 +6,9 @@ const ws = useWsStore();
 
 <template>
   <template v-if="ws.status === 'CLOSED' || ws.status === 'CONNECTING'">
-    <div class="absolute inset-0 w-full h-svh bg-secondary opacity-80"></div>
+    <div
+      class="absolute inset-0 w-full h-svh bg-secondary opacity-80 z-10"
+    ></div>
     <div
       class="absolute inset-0 w-full h-svh z-10 flex items-center justify-center"
     >
