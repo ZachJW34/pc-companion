@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "bun --filter '*' dev",
     "build": "bun --filter '*' build",
-    "start": "bun --filter '*' start"
+    "start": "bun --filter 'backend' start"
   },
   "keywords": [],
   "author": "",

@@ -42,4 +42,8 @@ const server = Bun.serve({
   port: Number(process.env.PORT) || 3000,
 });
 
-console.log(`PC-Companion is running on ${server.url.origin}`);
+console.log(
+  `${
+    Bun.env.NODE_ENV === "production" ? "[PROD]" : "[DEV]"
+  }: PC-Companion is running on ${server.url.origin}`
+);

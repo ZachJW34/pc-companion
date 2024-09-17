@@ -5,10 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "bun run vite",
-    "build": "vue-tsc && bun run --bun vite build",
+    "build": "bun run --bun vite build",
     "generate-pwa-assets": "pwa-assets-generator --preset minimal-2023 public/logo.png",
-    "preview": "bun run --bun vite preview",
-    "start": "caddy run"
+    "preview": "bun run --bun vite preview"
   },
   "dependencies": {
     "@vueuse/core": "^10.9.0",
