@@ -1,5 +1,9 @@
 import { Emulator } from "./emulator";
 import path from "node:path";
+import { restApiHandler } from "./rest";
+import { createLogger } from "./utils";
+
+const logger = createLogger("main");
 
 const FRONTEND_ASSETS_BASE = path.join(process.cwd(), "..", "frontend", "dist");
 const emulator = await Emulator.NEW();
@@ -15,6 +19,11 @@ const server = Bun.serve({
       }
 
       return new Response("WS available");
+    }
+
+    if (url.pathname.startsWith("/api")) {
+      // @ts-ignore
+      return restApiHandler(req, url);
     }
 
     // assume static content;
@@ -42,8 +51,8 @@ const server = Bun.serve({
   port: Number(process.env.PORT) || 3000,
 });
 
-console.log(
+logger.info(
   `${
-    Bun.env.NODE_ENV === "production" ? "[PROD]" : "[DEV]"
-  }: PC-Companion is running on ${server.url.origin}`
+    Bun.env.NODE_ENV === "production" ? "(PROD)" : "(DEV)"
+  } - PC-Companion is running on ${server.url.origin}`
 );

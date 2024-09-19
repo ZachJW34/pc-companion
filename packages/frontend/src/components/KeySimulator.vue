@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { logger } from "@/lib/utils";
+import { cn, logger } from "@/lib/utils";
 import { useWsStore } from "@/store/ws";
+import type { Component } from "vue";
 import { ref, computed } from "vue";
+import { ControlButtonClasses } from "./ui/classes";
 
 const ws = useWsStore();
 const isPressed = ref(false);
 
 const props = defineProps<{
-  value: { code: string; text: string };
+  value: SimulatedKey;
   type: "keyboard" | "mouse";
 }>();
 
@@ -33,6 +35,8 @@ function clickEventHandler(e: MouseEvent | TouchEvent, code: string) {
     }
   }
 }
+
+export type SimulatedKey = { code: string; render: string | Component };
 </script>
 
 <template>
@@ -41,12 +45,17 @@ function clickEventHandler(e: MouseEvent | TouchEvent, code: string) {
     @mouseup="(e) => clickEventHandler(e, value.code)"
     @touchstart="(e) => clickEventHandler(e, value.code)"
     @touchend="(e) => clickEventHandler(e, value.code)"
-    variant="outline"
     :class="[
-      'bg-gray-900 border border-gray-500 min-w-16 h-10 rounded select-none flex items-center justify-center',
+      cn(ControlButtonClasses, 'min-w-10 min-h-8 text-xs'),
       { 'bg-secondary': isPressed },
     ]"
   >
-    {{ value.text }}
+    <template v-if="typeof value.render === 'string'">
+      {{ value.render }}
+    </template>
+    <template v-else>
+      <component :is="value.render"></component>
+    </template>
+    <slot></slot>
   </div>
 </template>
