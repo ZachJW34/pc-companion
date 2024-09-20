@@ -15,12 +15,8 @@ type AudioCommands = {
   setOutput: AudioHandler;
 };
 
-const PlatformAudioHandlers: Record<string, AudioCommands> = {
-  mac: {
-    listOutput: {
-      cmd: () => ["SwitchAudioSource", "-a", "-f", "json", "-t", "output"],
-      parse: (raw: string) => {
-        const parsedDevices = [];
+const defaultListParse = (raw: string) => {
+  const parsedDevices = [];
         for (const rawDev of raw.split("\n")) {
           if (rawDev) {
             try {
@@ -32,7 +28,13 @@ const PlatformAudioHandlers: Record<string, AudioCommands> = {
         }
 
         return parsedDevices;
-      },
+}
+
+const PlatformAudioHandlers: Record<string, AudioCommands> = {
+  mac: {
+    listOutput: {
+      cmd: () => ["SwitchAudioSource", "-a", "-f", "json", "-t", "output"],
+      parse: defaultListParse,
     },
     currentOutput: {
       cmd: () => ["SwitchAudioSource", "-c", "-f", "json", "-t", "output"],
@@ -50,24 +52,42 @@ const PlatformAudioHandlers: Record<string, AudioCommands> = {
       cmd: () => [
         "powershell.exe",
         "-Command",
-        "Get-AudioDevice -List",
+        "Get-AudioDevice",
+        "-List",
         "|",
         "ConvertTo-Json",
         "-Depth",
         "1",
       ],
-      parse(_raw: string) {
-        return [];
+      parse(raw: string) {
+        return (JSON.parse(raw) as any[]).filter((val) => val.Type === 'Playback').map((val) => ({id: val.Index, name: val.Name}))
       },
     },
     currentOutput: {
-      cmd: () => [""],
-      parse(_raw: string) {
-        return [];
+      cmd: () => [
+        "powershell.exe",
+        "-Command",
+        "Get-AudioDevice",
+        "-Playback",
+        "|",
+        "ConvertTo-Json",
+        "-Depth",
+        "1",
+      ],
+      parse(raw: string) {
+        const {Index: id, Name: name} = JSON.parse(raw);
+        return [{id, name}];
       },
     },
     setOutput: {
-      cmd: (id: string) => ["SwitchAudioSource", "-i", id],
+      cmd: (id: string) => [
+        "powershell.exe",
+        "-Command",
+        "Set-AudioDevice",
+        "-Index",
+        `${id}`,
+        "-DefaultOnly",
+      ],
       parse: (_raw: string) => [],
     },
   },
@@ -99,6 +119,7 @@ export async function getOutputAudioDevices(
       statusText: "ok",
     });
   } catch (e) {
+    logger.debug(`Bun.spawn() failed with error: ${e}`);
     if (e instanceof TypeError) {
       return new JsonResponse(JSON.stringify({ message: e.message }), {
         status: 400,
@@ -141,7 +162,7 @@ export async function setOutputAudioDevice(
   if (!audioHandlers) {
     return new JsonResponse(
       JSON.stringify({
-        message: `No Audio Device Handler for platform= ${platform}`,
+        message: `No Audio Device Handler for platform = ${platform}`,
       })
     );
   }
@@ -173,7 +194,7 @@ async function executeAudioHandler(
   handler: AudioHandler,
   cmdArgs: string[] = []
 ) {
-  logger.debug(`Executing Bun.spawn(${handler.cmd})`);
+  logger.debug(`Executing Bun.spawn(${handler.cmd(...cmdArgs)})`);
 
   const subprocess = Bun.spawn({
     cmd: handler.cmd(...cmdArgs),
@@ -184,6 +205,6 @@ async function executeAudioHandler(
     },
   });
   const raw = await Bun.readableStreamToText(subprocess.stdout);
-  logger.debug(`Raw shell result ": ${raw}`);
+  logger.debug(`Raw shell result: ${raw}`);
   return handler.parse(raw);
 }

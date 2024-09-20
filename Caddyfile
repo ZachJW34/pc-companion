@@ -1,5 +1,11 @@
 {$IP_ADDRESS}:7777 {
+	# Reverse proxy for WebSocket
 	reverse_proxy /ws http://localhost:3000
+	
+	# Reverse proxy for API
+	reverse_proxy /api/* http://localhost:3000
+	
+	# Serve frontend files
 	root * ./packages/frontend/dist
 	file_server
 }

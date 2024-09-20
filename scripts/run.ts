@@ -4,7 +4,7 @@ import { join } from "path";
 function getIpAddress() {
   for (const interfaces of Object.values(networkInterfaces())) {
     const ip = (interfaces || []).find(
-      (x) => x.family === "IPv4" && !x.internal
+      (x) => x.family === "IPv4" && !x.internal && x.mac !== '00:00:00:00:00:00'
     );
 
     if (ip) return ip.address;
