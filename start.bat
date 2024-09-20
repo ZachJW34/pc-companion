@@ -1,1 +1,1 @@
-bun run start > out.log
+bun run scripts/run.ts

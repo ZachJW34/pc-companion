@@ -25,7 +25,7 @@ if (!ipAddress) {
 
 const bunServer = Bun.spawn({
   cmd: ["bun", "run", "start"],
-  cwd: ROOT_DIR,
+  cwd: join(ROOT_DIR, 'packages', 'backend'),
   stdout: Bun.file(BACKEND_LOG),
   stderr: Bun.file(BACKEND_ERROR_LOG),
   env: { ...Bun.env, NODE_ENV: "production" },
