@@ -5,6 +5,7 @@ import tailwind from "tailwindcss";
 import autoprefixer from "autoprefixer";
 import { VitePWA } from "vite-plugin-pwa";
 import replace from "@rollup/plugin-replace";
+import Icons from "unplugin-icons/vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -57,6 +58,7 @@ export default defineConfig({
         ],
       },
     }),
+    Icons({ autoInstall: true }),
   ],
   resolve: {
     alias: {
@@ -69,6 +71,9 @@ export default defineConfig({
       "/ws": {
         target: "ws://localhost:3000",
         ws: true,
+      },
+      "/api": {
+        target: "http://localhost:3000",
       },
     },
   },

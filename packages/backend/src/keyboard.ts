@@ -81,6 +81,13 @@ export const BrowserToKeyMapping = {
   Home: Key.Home,
   MetaLeft: Key.LeftCmd,
   MetaRight: Key.RightCmd,
+  Multiply: Key.Multiply,
+  Subtract: Key.Subtract,
+  Insert: Key.Insert,
+  PageUp: Key.PageUp,
+  PageDown: Key.PageDown,
+  Add: Key.Add,
+  End: Key.End,
 } as const;
 
 export type BrowserKeys = keyof typeof BrowserToKeyMapping;

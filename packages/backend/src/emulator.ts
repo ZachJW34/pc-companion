@@ -4,7 +4,9 @@ import { KeyboardHandler } from "./keyboard";
 import type { RemoteEvent } from "./events";
 import { TouchHandler } from "./touch";
 import { ScreenHandler } from "./screen";
-import { debugLogger } from "./utils";
+import { createLogger } from "./utils";
+
+const logger = createLogger("EMULATOR");
 
 export class Emulator {
   #keyboardHandler: KeyboardHandler;
@@ -38,7 +40,7 @@ export class Emulator {
 
   async handleEvent(e: string | Buffer) {
     const event: RemoteEvent = JSON.parse(e.toString());
-    debugLogger("ws:recieved - ", event);
+    logger.debug("ws:recieved - ", event);
 
     switch (event.type) {
       case "keydown": {
