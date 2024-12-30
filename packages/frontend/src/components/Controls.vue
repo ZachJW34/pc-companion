@@ -5,9 +5,11 @@ import FunctionKeys from "@/components/KeyboardControls.vue";
 import ControlKeys from "@/components/DeviceControls.vue";
 import KeySimulator from "@/components/KeySimulator.vue";
 import Devices from "@/components/ui/icons/Devices.vue";
+import { ref } from "vue";
 
 const [showFnKeys, toggleShowFnKeys] = useToggle(false);
 const [showCtrlKeys, toggleShowCtrlKeys] = useToggle(false);
+const outsideTouching = ref(false);
 </script>
 
 <template>
@@ -19,7 +21,7 @@ const [showCtrlKeys, toggleShowCtrlKeys] = useToggle(false);
     ></div>
     <ControlKeys v-if="showCtrlKeys" />
   </div>
-  <div class="flex justify-center items-center gap-2">
+  <div class="flex justify-center items-center">
     <div class="relative">
       <Button
         variant="secondary"
@@ -41,13 +43,20 @@ const [showCtrlKeys, toggleShowCtrlKeys] = useToggle(false);
         </div>
       </div>
     </div>
-    <div class="flex gap-2">
-      <KeySimulator
-        v-for="key in ['left', 'middle', 'right']"
-        :value="{ code: key, render: '' }"
-        type="mouse"
-        :class="{ 'w-6': key === 'middle', 'w-20': key !== 'middle' }"
-      />
+    <div
+      @touchstart="outsideTouching = true"
+      @touchend="outsideTouching = false"
+      class="h-full flex items-center px-2 py-4"
+    >
+      <div class="flex gap-2 h-8">
+        <KeySimulator
+          v-for="key in ['left', 'middle', 'right']"
+          :value="{ code: key, render: '' }"
+          type="mouse"
+          :outside-touching="outsideTouching"
+          :class="{ 'w-6': key === 'middle', 'w-20': key !== 'middle' }"
+        />
+      </div>
     </div>
     <div class="relative">
       <Button

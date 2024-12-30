@@ -7,10 +7,12 @@ import { ControlButtonClasses } from "./ui/classes";
 
 const ws = useWsStore();
 const isPressed = ref(false);
+const keySim = ref<HTMLDivElement>();
 
 const props = defineProps<{
   value: SimulatedKey;
   type: "keyboard" | "mouse";
+  outsideTouching: boolean;
 }>();
 
 const emulatedEvents = computed(() => ({
@@ -20,13 +22,24 @@ const emulatedEvents = computed(() => ({
 
 function clickEventHandler(e: MouseEvent | TouchEvent, code: string) {
   e.preventDefault();
+  e.stopPropagation();
   logger(`KeySimulator (${e.type}): `, { type: e.type, code });
+
+  // Disable outside touching to prevent events from occuring
+  // such as mouse click when minimizing the app (swipe from bottom)
+  if (props.outsideTouching) {
+    return;
+  }
 
   switch (e.type) {
     case "touchstart":
     case "mousedown": {
       isPressed.value = true;
-      return ws.send({ type: emulatedEvents.value.down, code });
+      return ws.send({
+        type: emulatedEvents.value.down,
+        code,
+        // log: log,
+      });
     }
     case "touchend":
     case "mouseup": {
@@ -41,6 +54,7 @@ export type SimulatedKey = { code: string; render: string | Component };
 
 <template>
   <div
+    ref="keySim"
     @mousedown="(e) => clickEventHandler(e, value.code)"
     @mouseup="(e) => clickEventHandler(e, value.code)"
     @touchstart="(e) => clickEventHandler(e, value.code)"
