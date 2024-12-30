@@ -43,7 +43,7 @@ bun run dev
 
 This will spawn two processes, the bun server that listens to WebSocket messages and the frontend server (Vue + Vite).
 
-The Vite server can be accessed from any device on your local network by visiting `http://<ip-address-of-machine-running-server>:<port>`.
+The Vite server can be accessed from any device on your local network by visiting `http://<host-ip>:<port>`.
 
 ### Contributions Welcome!!!
 
