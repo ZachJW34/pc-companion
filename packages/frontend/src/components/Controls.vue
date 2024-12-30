@@ -13,12 +13,15 @@ const outsideTouching = ref(false);
 </script>
 
 <template>
-  <div v-if="showFnKeys || showCtrlKeys" class="bg-secondary p-2 rounded-md">
+  <div
+    v-if="showFnKeys || showCtrlKeys"
+    class="bg-secondary p-2 rounded-md flex justify-around flex-wrap gap-2"
+  >
     <FunctionKeys v-if="showFnKeys" />
-    <div
+    <!-- <div
       v-if="showCtrlKeys && showFnKeys"
-      class="w-full border-b border-gray-500 my-2"
-    ></div>
+      class="border-l border-gray-500 my-2"
+    ></div> -->
     <ControlKeys v-if="showCtrlKeys" />
   </div>
   <div class="flex justify-center items-center">
@@ -46,7 +49,7 @@ const outsideTouching = ref(false);
     <div
       @touchstart="outsideTouching = true"
       @touchend="outsideTouching = false"
-      class="h-full flex items-center px-2 py-4"
+      class="h-full flex items-center px-2 py-3"
     >
       <div class="flex gap-2 h-8">
         <KeySimulator

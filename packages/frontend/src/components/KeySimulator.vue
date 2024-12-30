@@ -12,7 +12,7 @@ const keySim = ref<HTMLDivElement>();
 const props = defineProps<{
   value: SimulatedKey;
   type: "keyboard" | "mouse";
-  outsideTouching: boolean;
+  outsideTouching?: boolean;
 }>();
 
 const emulatedEvents = computed(() => ({

@@ -40,7 +40,7 @@ const throttledEventTouchHandler = useThrottleFn(touchEventHandler, 1);
 
 <template>
   <WsConnectionStatus />
-  <div class="pl-4 pr-4 pt-4 container flex flex-col">
+  <div class="pl-3 pr-3 pt-3 container flex flex-col">
     <div
       ref="divInteractive"
       class="main focus:border focus:border-blue-500 w-full bg-gray-900 border border-gray-500 rounded-sm h-full relative"
