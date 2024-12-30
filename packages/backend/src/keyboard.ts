@@ -109,8 +109,14 @@ export class KeyboardHandler {
 
   #getRealKey(code: BrowserKeys) {
     const realKey = BrowserToKeyMapping[code];
+    const platform = getPlatform();
 
-    if (code === "Windows" && getPlatform() !== "windows") {
+    if (code === "Windows" && platform !== "windows") {
+      return null;
+    } else if (
+      (code === "MetaLeft" || code === "MetaRight") &&
+      platform !== "mac"
+    ) {
       return null;
     } else {
       return realKey;
