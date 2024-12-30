@@ -11,7 +11,7 @@ export const useWsStore = defineStore("ws", () => {
     status,
     data,
     send: wsSend,
-    open,
+    open: wsOpen,
     close,
   } = useWebSocket(wsURL, {
     autoReconnect: {
@@ -27,6 +27,11 @@ export const useWsStore = defineStore("ws", () => {
       pongTimeout: 1000,
     },
   });
+
+  function open() {
+    error.value = null;
+    wsOpen();
+  }
 
   function send(data: any) {
     wsSend(JSON.stringify(data));

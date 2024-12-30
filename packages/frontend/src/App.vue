@@ -53,7 +53,7 @@ const throttledEventTouchHandler = useThrottleFn(touchEventHandler, 1);
         __DATE__
       </div>
       <KeyboardFab
-        class="absolute bottom-4 left-4 z-10"
+        class="absolute bottom-4 left-4 z-5"
         @key-press="keyboardEventHandler"
       />
     </div>
